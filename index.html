@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dịch Song Song Anh-Việt | Song Ngữ</title>
+    <title>Dịch Song Song Anh-Việt | Lưu trữ hội thoại</title>
     <style>
         * {
             margin: 0;
@@ -351,14 +351,201 @@
         
         .mic-icon {
             margin-left: 10px;
-            color: #FF6B6B;
             font-size: 1.2rem;
-            animation: pulse 2s infinite;
         }
         
         .mic-active {
             color: #00C853;
-            animation: none;
+            animation: pulse 1s infinite;
+        }
+        
+        .auto-start-notice {
+            background: #e1f5fe;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            color: #0288d1;
+        }
+        
+        .history-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 15px;
+            border: 2px dashed #ff6b6b;
+            position: relative;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .history-title {
+            color: #1e3c72;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-title i {
+            margin-right: 10px;
+            color: #ff6b6b;
+        }
+        
+        .toggle-history-btn {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .toggle-history-btn:hover {
+            background: #3a7bc8;
+            transform: rotate(90deg);
+        }
+        
+        .history-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .history-content.expanded {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #4A90E2;
+            position: relative;
+        }
+        
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-time {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .history-mode {
+            background: #4A90E2;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .history-original, .history-translated {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .history-original {
+            background: #f0f7ff;
+            border: 1px solid #d0e3ff;
+        }
+        
+        .history-translated {
+            background: #f0fff4;
+            border: 1px solid #d0f0d0;
+        }
+        
+        .history-original-label, .history-translated-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-original-label i {
+            color: #1e3c72;
+            margin-right: 5px;
+        }
+        
+        .history-translated-label i {
+            color: #00C853;
+            margin-right: 5px;
+        }
+        
+        .history-text {
+            line-height: 1.5;
+        }
+        
+        .no-history {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-style: italic;
+        }
+        
+        .delete-history-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .delete-history-btn:hover {
+            color: #ff5252;
+        }
+        
+        .history-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .history-count {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .clear-history-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .clear-history-btn:hover {
+            background: #ff5252;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -367,7 +554,7 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-language"></i> Dịch Song Song Anh-Việt</h1>
-            <p class="subtitle">Ứng dụng dịch thuật song ngữ thời gian thực - Bắt đầu nói để dịch</p>
+            <p class="subtitle">Ứng dụng dịch thuật song ngữ với lưu trữ hội thoại</p>
             
             <div class="language-toggle">
                 <button id="en-vi-btn" class="toggle-btn active">
@@ -380,6 +567,10 @@
                     <span class="flag flag-vn"></span> → <span class="flag flag-us"></span>
                     Việt sang Anh
                 </button>
+            </div>
+            
+            <div class="auto-start-notice">
+                <i class="fas fa-info-circle"></i> Ứng dụng tự động bật nhận diện giọng nói khi chuyển chế độ
             </div>
         </header>
         
@@ -437,23 +628,49 @@
             <button id="start-btn" class="voice-btn start-btn">
                 <i class="fas fa-microphone"></i> Bắt Đầu Nhận Diện Giọng Nói
             </button>
-            <button id="stop-btn" class="voice-btn stop-btn" disabled>
+            <button id="stop-btn" class="voice-btn stop-btn">
                 <i class="fas fa-microphone-slash"></i> Dừng Nhận Diện
             </button>
         </div>
         
         <div class="status ready" id="status">
-            <i class="fas fa-check-circle"></i> Hệ thống sẵn sàng. Nhấn "Bắt Đầu Nhận Diện Giọng Nói" để bắt đầu!
+            <i class="fas fa-check-circle"></i> Hệ thống sẵn sàng. Chọn chế độ để tự động bắt đầu!
+        </div>
+        
+        <div class="history-section">
+            <div class="history-header">
+                <div class="history-title">
+                    <i class="fas fa-history"></i> Lịch Sử Hội Thoại (tối đa 100 mục)
+                </div>
+                <button id="toggle-history" class="toggle-history-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            
+            <div class="history-content" id="history-content">
+                <div class="no-history" id="no-history">
+                    <i class="fas fa-inbox"></i><br>
+                    Chưa có lịch sử hội thoại. <br>
+                    Bắt đầu nói để tạo lịch sử hội thoại.
+                </div>
+                <div id="history-items"></div>
+                <div class="history-controls">
+                    <div class="history-count" id="history-count">Hiển thị 0/0 mục</div>
+                    <button class="clear-history-btn" id="clear-history-btn">
+                        <i class="fas fa-trash"></i> Xóa toàn bộ lịch sử
+                    </button>
+                </div>
+            </div>
         </div>
         
         <div class="instructions">
             <h3><i class="fas fa-info-circle"></i> Hướng dẫn sử dụng</h3>
-            <p>1. Chọn chế độ dịch bằng nút chuyển đổi phía trên</p>
-            <p>2. Nhấn "Bắt Đầu Nhận Diện Giọng Nói" để kích hoạt micro</p>
-            <p>3. Nói bằng tiếng Anh hoặc tiếng Việt tùy theo chế độ đã chọn</p>
-            <p>4. Kết quả dịch sẽ xuất hiện trong khung tương ứng</p>
-            <p>5. Bạn cũng có thể nhập văn bản trực tiếp vào ô nhập liệu</p>
-            <p>6. Sử dụng nút "Sao chép" để sao chép bản dịch</p>
+            <p>1. Chọn chế độ dịch bằng nút chuyển đổi phía trên (tự động bật nhận diện)</p>
+            <p>2. Nói bằng tiếng Anh hoặc tiếng Việt tùy theo chế độ đã chọn</p>
+            <p>3. Kết quả dịch sẽ xuất hiện trong khung tương ứng</p>
+            <p>4. Nhấn nút <i class="fas fa-plus"></i> để xem lịch sử hội thoại</p>
+            <p>5. Sử dụng nút "Sao chép" để sao chép bản dịch</p>
+            <p>6. Lịch sử hội thoại giờ đây lưu tối đa 100 mục</p>
         </div>
     </div>
 
@@ -472,12 +689,19 @@
             const copyButtons = document.querySelectorAll('.copy-btn');
             const enMic = document.getElementById('en-mic');
             const viMic = document.getElementById('vi-mic');
+            const toggleHistoryBtn = document.getElementById('toggle-history');
+            const historyContent = document.getElementById('history-content');
+            const historyItems = document.getElementById('history-items');
+            const noHistory = document.getElementById('no-history');
+            const clearHistoryBtn = document.getElementById('clear-history-btn');
+            const historyCount = document.getElementById('history-count');
             
             // Biến trạng thái
             let isListening = false;
             let recognition = null;
             let currentMode = 'en-vi'; // 'en-vi' hoặc 'vi-en'
-            let speechTimeout = null;
+            let conversationHistory = [];
+            const MAX_HISTORY_ITEMS = 100; // Tăng giới hạn lịch sử lên 100 mục
             
             // Khởi tạo nhận diện giọng nói
             function initSpeechRecognition() {
@@ -496,9 +720,6 @@
                 recognition.lang = currentMode === 'en-vi' ? 'en-US' : 'vi-VN';
                 
                 recognition.onresult = function(event) {
-                    // Reset timeout khi có kết quả
-                    clearTimeout(speechTimeout);
-                    
                     let transcript = '';
                     let finalTranscript = '';
                     
@@ -519,10 +740,10 @@
                     if (finalTranscript) {
                         if (currentMode === 'en-vi') {
                             enInput.value = finalTranscript;
-                            translateText(finalTranscript, 'en', 'vi', viOutput);
+                            translateText(finalTranscript, 'en', 'vi', viOutput, 'en-vi');
                         } else {
                             viInput.value = finalTranscript;
-                            translateText(finalTranscript, 'vi', 'en', enOutput);
+                            translateText(finalTranscript, 'vi', 'en', enOutput, 'vi-en');
                         }
                         
                         // Hiệu ứng mic đang hoạt động
@@ -546,13 +767,6 @@
                     if (event.error === 'no-speech') {
                         statusEl.innerHTML = "<i class='fas fa-microphone-slash'></i> Không phát hiện giọng nói. Hãy nói rõ hơn hoặc đưa mic gần hơn.";
                         statusEl.className = "status error";
-                        
-                        // Tự động dừng sau 3 giây nếu không có giọng nói
-                        speechTimeout = setTimeout(() => {
-                            stopBtn.click();
-                            statusEl.innerHTML = "<i class='fas fa-info-circle'></i> Đã dừng do không phát hiện giọng nói. Nhấn nút bắt đầu để thử lại.";
-                            statusEl.className = "status ready";
-                        }, 3000);
                     } else {
                         statusEl.innerHTML = `<i class='fas fa-exclamation-triangle'></i> Lỗi: ${event.error}`;
                         statusEl.className = "status error";
@@ -567,7 +781,7 @@
             }
             
             // Hàm dịch văn bản sử dụng Google Translate API
-            function translateText(text, sourceLang, targetLang, outputElement) {
+            function translateText(text, sourceLang, targetLang, outputElement, mode) {
                 outputElement.innerHTML = `<div class="loading"></div> Đang dịch...`;
                 
                 // Sử dụng Google Translate API
@@ -585,45 +799,145 @@
                                 }
                             }
                             outputElement.textContent = translatedText;
+                            
+                            // Lưu vào lịch sử sau khi dịch xong
+                            if (mode === 'en-vi') {
+                                addToHistory(text, translatedText, mode);
+                            } else {
+                                addToHistory(text, translatedText, mode);
+                            }
                         } else {
                             outputElement.textContent = "Không thể dịch văn bản này";
+                            addToHistory(text, "Không thể dịch văn bản này", mode);
                         }
                     })
                     .catch(error => {
                         console.error('Translation error:', error);
                         outputElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Lỗi dịch thuật: ${error.message}`;
+                        addToHistory(text, `Lỗi dịch thuật: ${error.message}`, mode);
                     });
             }
             
-            // Xử lý sự kiện nút bắt đầu
-            startBtn.addEventListener('click', function() {
+            // Hàm thêm vào lịch sử hội thoại
+            function addToHistory(original, translated, mode) {
+                // Tạo đối tượng lịch sử
+                const historyItem = {
+                    id: Date.now(),
+                    timestamp: new Date(),
+                    original: original,
+                    translated: translated,
+                    mode: mode
+                };
+                
+                // Thêm vào đầu mảng
+                conversationHistory.unshift(historyItem);
+                
+                // Giới hạn lịch sử tối đa 100 mục
+                if (conversationHistory.length > MAX_HISTORY_ITEMS) {
+                    conversationHistory.pop();
+                }
+                
+                // Cập nhật giao diện lịch sử
+                updateHistoryUI();
+            }
+            
+            // Cập nhật giao diện lịch sử
+            function updateHistoryUI() {
+                if (conversationHistory.length === 0) {
+                    noHistory.style.display = 'block';
+                    historyItems.innerHTML = '';
+                    historyCount.textContent = `Hiển thị 0/0 mục`;
+                    return;
+                }
+                
+                noHistory.style.display = 'none';
+                
+                // Tạo HTML cho từng mục lịch sử
+                let historyHTML = '';
+                
+                conversationHistory.forEach(item => {
+                    const timeString = item.timestamp.toLocaleTimeString();
+                    const modeText = item.mode === 'en-vi' ? 'Anh → Việt' : 'Việt → Anh';
+                    const originalLabel = item.mode === 'en-vi' ? 'Tiếng Anh' : 'Tiếng Việt';
+                    const translatedLabel = item.mode === 'en-vi' ? 'Tiếng Việt' : 'Tiếng Anh';
+                    
+                    historyHTML += `
+                    <div class="history-item" data-id="${item.id}">
+                        <button class="delete-history-btn" title="Xóa mục này">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="history-item-header">
+                            <div class="history-time">${timeString}</div>
+                            <div class="history-mode">${modeText}</div>
+                        </div>
+                        <div class="history-original">
+                            <div class="history-original-label">
+                                <i class="fas fa-comment"></i> ${originalLabel}
+                            </div>
+                            <div class="history-text">${item.original}</div>
+                        </div>
+                        <div class="history-translated">
+                            <div class="history-translated-label">
+                                <i class="fas fa-language"></i> ${translatedLabel}
+                            </div>
+                            <div class="history-text">${item.translated}</div>
+                        </div>
+                    </div>
+                    `;
+                });
+                
+                historyItems.innerHTML = historyHTML;
+                historyCount.textContent = `Hiển thị ${conversationHistory.length}/${MAX_HISTORY_ITEMS} mục`;
+                
+                // Thêm sự kiện xóa từng mục
+                document.querySelectorAll('.delete-history-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const item = this.closest('.history-item');
+                        const itemId = parseInt(item.dataset.id);
+                        
+                        // Xóa khỏi mảng lịch sử
+                        conversationHistory = conversationHistory.filter(h => h.id !== itemId);
+                        
+                        // Cập nhật giao diện
+                        updateHistoryUI();
+                    });
+                });
+            }
+            
+            // Hàm bắt đầu nhận diện giọng nói
+            function startRecognition() {
                 if (!recognition) initSpeechRecognition();
                 
                 try {
+                    if (recognition) {
+                        recognition.stop();
+                    }
+                    
+                    recognition.lang = currentMode === 'en-vi' ? 'en-US' : 'vi-VN';
                     recognition.start();
+                    
                     isListening = true;
                     startBtn.disabled = true;
                     stopBtn.disabled = false;
                     statusEl.innerHTML = "<i class='fas fa-microphone'></i> Đang nghe... Hãy bắt đầu nói!";
                     statusEl.className = "status listening";
                     
-                    // Thiết lập ngôn ngữ dựa trên chế độ hiện tại
-                    recognition.lang = currentMode === 'en-vi' ? 'en-US' : 'vi-VN';
-                    
                     // Hiệu ứng mic đang hoạt động
                     if (currentMode === 'en-vi') {
                         enMic.classList.add('mic-active');
+                        viMic.classList.remove('mic-active');
                     } else {
                         viMic.classList.add('mic-active');
+                        enMic.classList.remove('mic-active');
                     }
                 } catch (error) {
                     statusEl.innerHTML = `<i class='fas fa-exclamation-triangle'></i> Lỗi khi khởi động nhận diện giọng nói: ${error.message}`;
                     statusEl.className = "status error";
                 }
-            });
+            }
             
-            // Xử lý sự kiện nút dừng
-            stopBtn.addEventListener('click', function() {
+            // Hàm dừng nhận diện giọng nói
+            function stopRecognition() {
                 if (recognition) {
                     recognition.stop();
                     isListening = false;
@@ -636,9 +950,15 @@
                     enMic.classList.remove('mic-active');
                     viMic.classList.remove('mic-active');
                 }
-            });
+            }
             
-            // Xử lý chuyển đổi chế độ
+            // Xử lý sự kiện nút bắt đầu
+            startBtn.addEventListener('click', startRecognition);
+            
+            // Xử lý sự kiện nút dừng
+            stopBtn.addEventListener('click', stopRecognition);
+            
+            // Xử lý chuyển đổi chế độ và tự động bắt đầu
             enViBtn.addEventListener('click', function() {
                 currentMode = 'en-vi';
                 enViBtn.classList.add('active');
@@ -646,15 +966,8 @@
                 statusEl.innerHTML = "<i class='fas fa-info-circle'></i> Chế độ: Dịch Anh → Việt";
                 statusEl.className = "status ready";
                 
-                if (recognition && isListening) {
-                    recognition.stop();
-                    recognition.lang = 'en-US';
-                    recognition.start();
-                    
-                    // Hiệu ứng mic đang hoạt động
-                    enMic.classList.add('mic-active');
-                    viMic.classList.remove('mic-active');
-                }
+                // Tự động bắt đầu nhận diện khi chuyển chế độ
+                startRecognition();
             });
             
             viEnBtn.addEventListener('click', function() {
@@ -664,21 +977,14 @@
                 statusEl.innerHTML = "<i class='fas fa-info-circle'></i> Chế độ: Dịch Việt → Anh";
                 statusEl.className = "status ready";
                 
-                if (recognition && isListening) {
-                    recognition.stop();
-                    recognition.lang = 'vi-VN';
-                    recognition.start();
-                    
-                    // Hiệu ứng mic đang hoạt động
-                    viMic.classList.add('mic-active');
-                    enMic.classList.remove('mic-active');
-                }
+                // Tự động bắt đầu nhận diện khi chuyển chế độ
+                startRecognition();
             });
             
             // Dịch khi người dùng nhập văn bản
             enInput.addEventListener('input', function() {
                 if (enInput.value.trim()) {
-                    translateText(enInput.value, 'en', 'vi', viOutput);
+                    translateText(enInput.value, 'en', 'vi', viOutput, 'en-vi');
                 } else {
                     viOutput.textContent = "Bản dịch tiếng Việt sẽ xuất hiện ở đây...";
                 }
@@ -686,7 +992,7 @@
             
             viInput.addEventListener('input', function() {
                 if (viInput.value.trim()) {
-                    translateText(viInput.value, 'vi', 'en', enOutput);
+                    translateText(viInput.value, 'vi', 'en', enOutput, 'vi-en');
                 } else {
                     enOutput.textContent = "English translation will appear here...";
                 }
@@ -714,22 +1020,46 @@
                 });
             });
             
+            // Xử lý toggle lịch sử hội thoại
+            toggleHistoryBtn.addEventListener('click', function() {
+                historyContent.classList.toggle('expanded');
+                const icon = this.querySelector('i');
+                
+                if (historyContent.classList.contains('expanded')) {
+                    icon.classList.remove('fa-plus');
+                    icon.classList.add('fa-minus');
+                } else {
+                    icon.classList.remove('fa-minus');
+                    icon.classList.add('fa-plus');
+                }
+            });
+            
+            // Xóa toàn bộ lịch sử
+            clearHistoryBtn.addEventListener('click', function() {
+                if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử hội thoại?")) {
+                    conversationHistory = [];
+                    updateHistoryUI();
+                }
+            });
+            
             // Hiển thị thông báo khi trình duyệt không hỗ trợ API dịch
             if (!window.fetch) {
                 statusEl.innerHTML = "<i class='fas fa-exclamation-triangle'></i> Trình duyệt của bạn không hỗ trợ tính năng dịch thuật. Vui lòng cập nhật trình duyệt.";
                 statusEl.className = "status error";
             }
             
-            // Demo các câu dịch dài
+            // Khởi tạo nhận diện khi trang tải
+            initSpeechRecognition();
+            
+            // Thêm một số hội thoại mẫu
             setTimeout(() => {
-                const longEnglishText = "What are you worried about? Did the baby have a bad reaction last time? I understand your concerns and want to ensure everything goes smoothly this time.";
-                const longVietnameseText = "Chà đúng vậy, có ấy bị sốt một chút và khóc suốt một ngày và tôi cũng có thể đúng để thấy có ấy bị tổn thương. Có ấy rất nhỏ và đáng tin.";
+                const sampleEn = "good morning Meals on Wheels how can I help you";
+                const sampleVi = "Chào buổi sáng bữa ăn trên bánh xe làm thế nào tôi có thể giúp bạn";
+                addToHistory(sampleEn, sampleVi, 'en-vi');
                 
-                enInput.value = longEnglishText;
-                viInput.value = longVietnameseText;
-                
-                translateText(longEnglishText, 'en', 'vi', viOutput);
-                translateText(longVietnameseText, 'vi', 'en', enOutput);
+                const sampleVi2 = "Xin chào tôi là Judi Tôi muốn hỏi về việc tham gia tình nguyện chương trình Milk will Tôi muốn tham gia hội nhóm tình nguyện của cô và đóng góp cho cổng đông";
+                const sampleEn2 = "Hello, I'm Judi. I'd like to ask about volunteering for the Milk program. I want to join your volunteer group and contribute to the winter program.";
+                addToHistory(sampleVi2, sampleEn2, 'vi-en');
             }, 1000);
         });
     </script>
